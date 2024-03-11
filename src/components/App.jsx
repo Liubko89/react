@@ -1,28 +1,43 @@
-import { Product } from "./Product";
-import { age, favouriteBooks } from "./Constants";
-import { BookList } from "./BookList";
+import fetchDataArticles from "../articles-api";
+import { Fragment, useState } from "react";
+import ArticleList from "./ArticleList";
+import "./App.css";
+import SearchForm from "./SearchForm";
 
-function App() {
+const App = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleSearch = async (topic) => {
+    try {
+      setArticles([]);
+      setError(false);
+      setLoading(true);
+      const resp = await fetchDataArticles(topic);
+      const {
+        data: { hits },
+      } = resp;
+
+      setArticles(hits);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div>
-      <h1>Best selling</h1>
-
-      <Product
-        name="Tacos With Lime"
-        price="150grn"
-        url="https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?dpr=2&h=480&w=640"
-      />
-      <Product
-        name="Fries and Burger"
-        price="100grn"
-        url="https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?dpr=2&h=480&w=640"
-      />
-
-      <h2>Books of the week</h2>
-      <p>{age}</p>
-      <BookList books={favouriteBooks} />
-    </div>
+    <Fragment>
+      <h1>React JS. Articles</h1>
+      <SearchForm onSearch={handleSearch} />
+      {loading && <span className="loader"></span>}
+      {error && (
+        <p>Whoops, something went wrong! Please try reloading this page!</p>
+      )}
+      {articles.length > 0 && <ArticleList articles={articles} />}
+    </Fragment>
   );
-}
+};
 
 export default App;
