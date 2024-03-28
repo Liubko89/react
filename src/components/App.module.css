@@ -1,0 +1,17 @@
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+}
+.link:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.active {
+  color: lightblue;
+}/*# sourceMappingURL=App.module.css.map */
